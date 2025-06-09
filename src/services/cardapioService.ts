@@ -8,6 +8,7 @@ import {
     onSnapshot,
     getFirestore,
     getDocs,
+    getDoc,
 } from "firebase/firestore"
 import { CardViewProps } from "../types/cardapio"
 import { db } from "../firebase/firebaseConfig"
@@ -42,4 +43,20 @@ export async function getCardapioOnce(): Promise<CardViewProps[]> {
         id: doc.id,
         ...(doc.data() as CardViewProps),
     }))
+}
+
+export async function getCardapioById(id: string): Promise<CardViewProps | null> {
+    try {
+        const docRef = doc(db, "cardapio", id);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            return { ...(docSnap.data() as CardViewProps), id };
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error("Erro ao buscar cardápio por ID:", error);
+        return null;
+    }
 }

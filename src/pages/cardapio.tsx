@@ -57,12 +57,14 @@ export default function Cardapio() {
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {cardapioPorTopico[topico].map((item) => (
                       <CardView
+
                         key={item.id}
                         topico={item.topico}
                         title={item.title}
                         description={item.description}
                         imageUrl={item.imageUrl}
                         valor={item.valor}
+                        disponivel={item.disponivel}
                       />
                     ))}
                   </div>

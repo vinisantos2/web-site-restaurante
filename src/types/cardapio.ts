@@ -6,4 +6,5 @@ export type CardViewProps = {
     description: string
     imageUrl: string
     valor: number
+    disponivel: boolean
 }
