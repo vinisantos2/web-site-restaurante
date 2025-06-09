@@ -1,7 +1,7 @@
 // components/EditCardModal.tsx
 import React from "react"
-import CardapioForm from "../componentsAdm/CardapioForm"
 import { CardViewProps } from "@/src/types/cardapio"
+import CardapioForm from "./CardapioForm"
 
 type Props = {
   isOpen: boolean

@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useState } from 'react'
 import { Title } from '../components/Title'
 import { CardView } from '../components/CardView'
@@ -24,9 +26,20 @@ export default function Cardapio() {
     fetchCardapio()
   }, [])
 
+  // Agrupar os itens por tópico
+  const cardapioPorTopico = cardapio.reduce((acc, item) => {
+    const topico = item.topico || 'Outros'
+    if (!acc[topico]) acc[topico] = []
+    acc[topico].push(item)
+    return acc
+  }, {} as Record<string, CardViewProps[]>)
+
+  // Gerar lista única de tópicos
+  const topicosUnicos = Object.keys(cardapioPorTopico)
+
   return (
     <>
-      <HeaderBack />
+      <HeaderBack topicos={topicosUnicos} />
 
       <main className="py-20 px-4 bg-gradient-to-r from-yellow-50 to-yellow-100 min-h-screen">
         <div className="max-w-6xl mx-auto">
@@ -35,21 +48,27 @@ export default function Cardapio() {
           {loading ? (
             <p className="text-center mt-12">Carregando...</p>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-              {cardapio.length > 0 ? (
-                cardapio.map((item, idx) => (
-                  <CardView
-                    key={item.id ?? idx}
-                    title={item.title}
-                    description={item.description}
-                    imageUrl={item.imageUrl}
-                    valor={item.valor}
-                  />
-                ))
-              ) : (
-                <p className="text-center col-span-full">Nenhum item encontrado.</p>
-              )}
-            </div>
+            <>
+              {topicosUnicos.map((topico) => (
+                <section key={topico} id={topico} className="mt-16 scroll-mt-24">
+                  <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">
+                    {topico}
+                  </h2>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {cardapioPorTopico[topico].map((item) => (
+                      <CardView
+                        key={item.id}
+                        topico={item.topico}
+                        title={item.title}
+                        description={item.description}
+                        imageUrl={item.imageUrl}
+                        valor={item.valor}
+                      />
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </>
           )}
         </div>
       </main>

@@ -1,94 +1,155 @@
-import { loginWithEmail } from '@/src/firebase/auth'
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+"use client"
 
-export default function AdminLogin() {
+import { useRouter } from "next/navigation"
+import { onAuthStateChanged, signOut, User } from "firebase/auth"
+import { useEffect, useState } from "react"
+import toast from "react-hot-toast"
+import { CardViewProps } from "@/src/types/cardapio"
+import { auth } from "@/src/firebase/firebaseConfig"
+import { addCardapio, deleteCardapio, listenToCardapio, updateCardapio } from "@/src/services/cardapioService"
+import CardapioForm from "@/src/pages/admin/componentsAdmin/CardapioForm"
+import CardViewAdm from "@/src/pages/admin/componentsAdmin/CardViewAdm"
+import EditCardModal from "./componentsAdmin/EditCardModal"
+
+
+export default function HomeAdmin() {
     const router = useRouter()
-    const [email, setEmail] = useState('')
-    const [senha, setSenha] = useState('')
+    const [user, setUser] = useState<User | null>(null)
+    const [cards, setCards] = useState<CardViewProps[]>([])
+    const [newCard, setNewCard] = useState<CardViewProps>({
+        topico: '',
+        title: "",
+        description: "",
+        imageUrl: "",
+        valor: 0,
+    })
+    const [loading, setLoading] = useState(true)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [cardToEdit, setCardToEdit] = useState<CardViewProps>({
+        topico: '',
+        title: "",
+        description: "",
+        imageUrl: "",
+        valor: 0,
+        id: "",
+    })
 
-    // Verifica se já está logado
     useEffect(() => {
-        const auth = getAuth()
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                router.replace('/admin/homeAdmin')
-            }
+        const unsubscribe = onAuthStateChanged(auth, (u) => {
+            if (!u) router.replace("/admin/login")
+            else setUser(u)
         })
-
         return () => unsubscribe()
-    }, [])
+    }, [router])
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if (!camposValidos()) return
+    useEffect(() => {
+        if (!user) return
+        const unsubscribe = listenToCardapio((cards) => {
+            setCards(cards)
+            setLoading(false)
+        })
+        return () => unsubscribe()
+    }, [user])
+
+    async function handleAddCard() {
+        const { topico, title, description, imageUrl } = newCard
+        if (!title || !description) {
+            toast.error("Preencha todos os campos!")
+            return
+        }
         try {
-            await loginWithEmail(email, senha)
-            router.push("/admin/homeAdmin")
-        } catch (e) {
-            toast.error("Erro ao fazer login. Verifique os dados.")
-            console.log(e)
+            await addCardapio(newCard)
+            toast.success("Card criado!")
+            setNewCard({ topico: '', title: "", description: "", imageUrl: "", valor: 0 })
+        } catch (error) {
+            toast.error("Erro ao criar card")
         }
     }
 
-    const camposValidos = () => {
-        if (!email.includes('@') || !email.includes('.')) {
-            toast.error('Digite um e-mail válido.')
-            return false
+    async function handleDeleteCard(id?: string) {
+        if (!id) return
+        try {
+            await deleteCardapio(id)
+            toast.success("Card deletado!")
+        } catch {
+            toast.error("Erro ao deletar card")
         }
-
-        if (senha.length < 5) {
-            toast.error('Senha deve ter pelo menos 5 caracteres.')
-            return false
-        }
-
-        return true
     }
+
+    async function handleSaveEdit() {
+        if (!cardToEdit.id) return
+        try {
+            await updateCardapio(cardToEdit.id, {
+                topico: cardToEdit.topico,
+                title: cardToEdit.title,
+                description: cardToEdit.description,
+                imageUrl: cardToEdit.imageUrl,
+                valor: cardToEdit.valor,
+            })
+            toast.success("Card atualizado!")
+        } catch {
+            toast.error("Erro ao atualizar card")
+        }
+    }
+
+    async function handleLogout() {
+        try {
+            await signOut(auth)
+            toast.success("Você saiu!")
+            router.replace("/admin/login")
+        } catch {
+            toast.error("Erro ao sair")
+        }
+    }
+
+    if (loading) return <p>Carregando...</p>
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-yellow-50 to-yellow-100 px-4">
-            <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
-                <h1 className="text-2xl font-bold text-center text-blue-900 mb-6">Área Administrativa</h1>
-
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                            E-mail
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 focus:ring-blue-500 focus:border-blue-500"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div>
-                        <label htmlFor="senha" className="block text-sm font-medium text-gray-700">
-                            Senha
-                        </label>
-                        <input
-                            id="senha"
-                            type="password"
-                            className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 focus:ring-blue-500 focus:border-blue-500"
-                            value={senha}
-                            onChange={(e) => setSenha(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-900 text-white py-2 rounded-md hover:bg-blue-800 transition"
-                    >
-                        Entrar
-                    </button>
-                </form>
+        <div className="p-8 max-w-4xl mx-auto">
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-3xl font-bold">Olá, {user?.email}</h1>
+                <button
+                    onClick={handleLogout}
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+                >
+                    Sair
+                </button>
             </div>
+
+            {/* Novo Cardápio */}
+            <section className="mb-10">
+                <h2 className="text-xl font-semibold mb-4">Novo cardápio</h2>
+                <CardapioForm
+                    card={newCard}
+                    onChange={setNewCard}
+                    onSubmit={handleAddCard}
+                    buttonLabel="Adicionar cardápio"
+                />
+            </section>
+
+            {/* Lista de Cards */}
+            <section>
+                <h2 className="text-xl font-semibold mb-4">Cardápio Atual</h2>
+                {cards.length === 0 && <p>Nenhum card cadastrado</p>}
+                <ul>
+                    {cards.map((card) => <CardViewAdm
+                        card={card}
+                        deleted={() => handleDeleteCard(card.id)}
+                        edit={() => {
+                            setCardToEdit(card)
+                            setIsModalOpen(true)
+                        }} key={card.id} />)}
+
+                </ul>
+            </section>
+
+            <EditCardModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                card={cardToEdit}
+                onChange={setCardToEdit}
+                onSave={handleSaveEdit}
+            />
         </div>
     )
 }

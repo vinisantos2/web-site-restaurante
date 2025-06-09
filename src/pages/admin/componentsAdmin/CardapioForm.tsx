@@ -14,6 +14,13 @@ export default function CardapioForm({ card, onChange, onSubmit, buttonLabel }: 
     <div className="space-y-2">
       <input
         type="text"
+        placeholder="Topico"
+        className="border px-3 py-2 rounded w-full"
+        value={card.topico}
+        onChange={(e) => onChange({ ...card, topico: e.target.value })}
+      />
+      <input
+        type="text"
         placeholder="Título"
         className="border px-3 py-2 rounded w-full"
         value={card.title}
