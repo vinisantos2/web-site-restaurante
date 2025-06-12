@@ -26,7 +26,6 @@ export default function Cardapio() {
     fetchCardapio()
   }, [])
 
-  // Agrupar os itens por tópico
   const cardapioPorTopico = cardapio.reduce((acc, item) => {
     const topico = item.topico || 'Outros'
     if (!acc[topico]) acc[topico] = []
@@ -34,30 +33,46 @@ export default function Cardapio() {
     return acc
   }, {} as Record<string, CardViewProps[]>)
 
-  // Gerar lista única de tópicos
   const topicosUnicos = Object.keys(cardapioPorTopico)
 
   return (
     <>
       <HeaderBack topicos={topicosUnicos} />
 
-      <main className="py-20 px-4 bg-gradient-to-r from-yellow-50 to-yellow-100 min-h-screen">
+      <main className="py-20 px-4 min-h-screen
+        bg-gradient-to-r from-yellow-50 to-yellow-100
+        dark:from-gray-900 dark:to-gray-800
+        transition-colors duration-500
+      ">
         <div className="max-w-6xl mx-auto">
-          <Title title="Cardápio" subtitle="Confira nossas deliciosas opções" center />
+          <Title
+            title="Cardápio"
+            subtitle="Confira nossas deliciosas opções"
+            center
+          />
 
           {loading ? (
-            <p className="text-center mt-12">Carregando...</p>
+            <p className="text-center mt-12 text-gray-700 dark:text-gray-300">
+              Carregando...
+            </p>
           ) : (
             <>
               {topicosUnicos.map((topico) => (
-                <section key={topico} id={topico} className="mt-16 scroll-mt-24">
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">
+                <section
+                  key={topico}
+                  id={topico}
+                  className="mt-16 scroll-mt-24"
+                >
+                  <h2 className="text-2xl font-bold
+                    mb-6 border-b pb-2
+                    text-gray-800 dark:text-gray-100
+                    border-yellow-400 dark:border-yellow-600
+                  ">
                     {topico}
                   </h2>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {cardapioPorTopico[topico].map((item) => (
                       <CardView
-
                         key={item.id}
                         topico={item.topico}
                         title={item.title}
