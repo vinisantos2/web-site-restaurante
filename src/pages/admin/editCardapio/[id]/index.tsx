@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import CardapioForm from "../../componentsAdmin/CardapioForm";
 import { getCardapioById, updateCardapio } from "@/src/services/cardapioService";
 import { CardViewProps } from "@/src/types/cardapio";
-import Loading from "../../componentsAdmin/Loading";
+import Loading from "@/src/componentsAdmin/Loading";
+import CardapioForm from "@/src/componentsAdmin/CardapioForm";
 
 export default function EditCardapio() {
   const router = useRouter();

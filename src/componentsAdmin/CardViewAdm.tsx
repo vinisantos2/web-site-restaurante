@@ -1,4 +1,4 @@
-import { CardViewProps } from "../../../types/cardapio"
+import { CardViewProps } from "../types/cardapio"
 
 export default function CardViewAdm({ card, edit, deleted }: {
     card: CardViewProps,

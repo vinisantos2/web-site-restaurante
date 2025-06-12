@@ -1,9 +1,9 @@
-import CardapioForm from "./componentsAdmin/CardapioForm";
 import { CardViewProps } from "@/src/types/cardapio";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useAuthRedirect } from "./hoohsAdmin/useAuthRedirect";
+import { useAuthRedirect } from "../../hoohsAdmin/useAuthRedirect";
 import { addCardapio } from "@/src/services/cardapioService";
+import CardapioForm from "@/src/componentsAdmin/CardapioForm";
 
 export default function NovoCardapio() {
     const router = useRouter();

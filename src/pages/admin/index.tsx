@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CardViewProps } from "@/src/types/cardapio";
 import { getCardapioOnce, deleteCardapio } from "@/src/services/cardapioService";
-import CardViewAdm from "./componentsAdmin/CardViewAdm";
-import { useAuthRedirect } from "./hoohsAdmin/useAuthRedirect";
-import Loading from "./componentsAdmin/Loading";
+import { useAuthRedirect } from "../../hoohsAdmin/useAuthRedirect";
+import Loading from "@/src/componentsAdmin/Loading";
+import CardViewAdm from "@/src/componentsAdmin/CardViewAdm";
 
 export default function HomeAdmin() {
   const [cards, setCards] = useState<CardViewProps[]>([]);
