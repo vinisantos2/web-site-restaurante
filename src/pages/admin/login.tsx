@@ -1,97 +1,105 @@
-"use client"
-import { loginWithEmail } from '@/src/firebase/auth'
-import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+"use client";
+import { loginWithEmail } from "@/src/firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 export default function AdminLogin() {
-    const router = useRouter()
-    const [email, setEmail] = useState('')
-    const [senha, setSenha] = useState('')
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
 
-    // Verifica se já está logado
-    useEffect(() => {
-        const auth = getAuth()
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                router.replace('/admin')
-            }
-        })
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        router.replace("/admin");
+      }
+    });
 
-        return () => unsubscribe()
-    }, [])
+    return () => unsubscribe();
+  }, []);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if (!camposValidos()) return
-        try {
-            await loginWithEmail(email, senha)
-            router.push("/admin")
-        } catch (e) {
-            toast.error("Erro ao fazer login. Verifique os dados.")
-            console.log(e)
-        }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!camposValidos()) return;
+    try {
+      await loginWithEmail(email, senha);
+      router.push("/admin");
+    } catch (e) {
+      toast.error("Erro ao fazer login. Verifique os dados.");
+      console.log(e);
+    }
+  };
+
+  const camposValidos = () => {
+    if (!email.includes("@") || !email.includes(".")) {
+      toast.error("Digite um e-mail válido.");
+      return false;
     }
 
-    const camposValidos = () => {
-        if (!email.includes('@') || !email.includes('.')) {
-            toast.error('Digite um e-mail válido.')
-            return false
-        }
-
-        if (senha.length < 5) {
-            toast.error('Senha deve ter pelo menos 5 caracteres.')
-            return false
-        }
-
-        return true
+    if (senha.length < 5) {
+      toast.error("Senha deve ter pelo menos 5 caracteres.");
+      return false;
     }
 
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-yellow-50 to-yellow-100 px-4">
-            <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
-                <h1 className="text-2xl font-bold text-center text-blue-900 mb-6">Área Administrativa</h1>
+    return true;
+  };
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                            E-mail
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 focus:ring-blue-500 focus:border-blue-500"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-yellow-100 to-yellow-300 px-4">
+      <div className="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md border border-yellow-200">
+        <h1 className="text-3xl font-extrabold text-center text-yellow-600 mb-2">
+          Lanchonete XYZ
+        </h1>
+        <p className="text-center text-gray-600 mb-6 text-sm">
+          Acesso exclusivo para administradores
+        </p>
 
-                    <div>
-                        <label htmlFor="senha" className="block text-sm font-medium text-gray-700">
-                            Senha
-                        </label>
-                        <input
-                            id="senha"
-                            type="password"
-                            className="mt-1 block w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 focus:ring-blue-500 focus:border-blue-500"
-                            value={senha}
-                            onChange={(e) => setSenha(e.target.value)}
-                            required
-                        />
-                    </div>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
+              E-mail
+            </label>
+            <input
+              id="email"
+              type="email"
+              className="mt-1 block w-full rounded-lg border border-gray-300 shadow-sm px-4 py-2 focus:ring-yellow-500 focus:border-yellow-500 transition"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
 
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-900 text-white py-2 rounded-md hover:bg-blue-800 transition"
-                    >
-                        Entrar
-                    </button>
-                </form>
-            </div>
-        </div>
-    )
+          <div>
+            <label
+              htmlFor="senha"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Senha
+            </label>
+            <input
+              id="senha"
+              type="password"
+              className="mt-1 block w-full rounded-lg border border-gray-300 shadow-sm px-4 py-2 focus:ring-yellow-500 focus:border-yellow-500 transition"
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-yellow-600 text-white font-semibold py-2 rounded-lg hover:bg-yellow-700 transition shadow-sm"
+          >
+            Entrar
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 }
-
-
