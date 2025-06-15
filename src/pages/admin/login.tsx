@@ -1,4 +1,5 @@
 "use client";
+import Loading from "@/src/componentsAdmin/Loading";
 import { loginWithEmail } from "@/src/firebase/auth";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/router";
@@ -9,13 +10,16 @@ export default function AdminLogin() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         router.replace("/admin");
+        setLoading(false)
       }
+      setLoading(false)
     });
 
     return () => unsubscribe();
@@ -24,12 +28,15 @@ export default function AdminLogin() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!camposValidos()) return;
+    setLoading(true)
     try {
       await loginWithEmail(email, senha);
       router.push("/admin");
+      setLoading(false)
     } catch (e) {
       toast.error("Erro ao fazer login. Verifique os dados.");
       console.log(e);
+      setLoading(false)
     }
   };
 
@@ -99,6 +106,7 @@ export default function AdminLogin() {
             Entrar
           </button>
         </form>
+        {loading ? <Loading /> : null}
       </div>
     </div>
   );
