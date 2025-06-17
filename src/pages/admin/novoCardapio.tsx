@@ -8,7 +8,7 @@ import HeaderAdminBack from "@/src/componentsAdmin/HeaderBackAdmin";
 
 export default function NovoCardapio() {
   const router = useRouter();
-  const { user, loading } = useAuthRedirectAdmin();
+  const { usuario, loading } = useAuthRedirectAdmin();
 
   const [newCard, setNewCard] = useState<CardapioProduto>({
     topico: "",

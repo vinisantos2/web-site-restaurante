@@ -9,11 +9,11 @@ import {
   doc,
   Timestamp,
 } from 'firebase/firestore'
-import { Cliente } from '../types/Cliente'
+import { Usuario } from '../types/Usuario'
 
 const collectionRef = collection(db, 'clientes')
 
-export const salvarCliente = async (cliente: Cliente) => {
+export const salvarCliente = async (cliente: Usuario) => {
   const novoCliente = {
     ...cliente,
     createdAt: Timestamp.now(),
@@ -22,15 +22,7 @@ export const salvarCliente = async (cliente: Cliente) => {
   return docRef.id
 }
 
-export const listarClientes = async (): Promise<Cliente[]> => {
-  const snapshot = await getDocs(collectionRef)
-  return snapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data(),
-  })) as Cliente[]
-}
-
-export const atualizarCliente = async (id: string, cliente: Cliente) => {
+export const atualizarCliente = async (id: string, cliente: Usuario) => {
   const docRef = doc(db, 'clientes', id)
   await updateDoc(docRef, cliente as any)
 }
