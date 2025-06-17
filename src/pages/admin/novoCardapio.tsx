@@ -1,16 +1,16 @@
-import { CardViewProps } from "@/src/types/cardapio";
+import { CardapioProduto } from "@/src/types/cardapio";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useAuthRedirect } from "../../hoohsAdmin/useAuthRedirect";
+import { useAuthRedirectAdmin } from "../../hoohsAdmin/useAuthRedirectAdmin";
 import { addCardapio } from "@/src/services/cardapioService";
 import CardapioForm from "@/src/componentsAdmin/CardapioForm";
 import HeaderAdminBack from "@/src/componentsAdmin/HeaderBackAdmin";
 
 export default function NovoCardapio() {
   const router = useRouter();
-  const { user, loading } = useAuthRedirect();
+  const { user, loading } = useAuthRedirectAdmin();
 
-  const [newCard, setNewCard] = useState<CardViewProps>({
+  const [newCard, setNewCard] = useState<CardapioProduto>({
     topico: "",
     title: "",
     description: "",

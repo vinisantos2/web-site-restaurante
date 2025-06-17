@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { getCardapioById, updateCardapio } from "@/src/services/cardapioService";
-import { CardViewProps } from "@/src/types/cardapio";
+import { CardapioProduto } from "@/src/types/cardapio";
 import Loading from "@/src/componentsAdmin/Loading";
 import CardapioForm from "@/src/componentsAdmin/CardapioForm";
 import HeaderAdminBack from "@/src/componentsAdmin/HeaderBackAdmin";
@@ -10,7 +10,7 @@ export default function EditCardapio() {
   const router = useRouter();
   const { id } = router.query;
 
-  const [card, setCard] = useState<CardViewProps | null>(null);
+  const [card, setCard] = useState<CardapioProduto | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function EditCardapio() {
     fetchCard();
   }, [id, router]);
 
-  async function handleUpdate(updatedCard: CardViewProps) {
+  async function handleUpdate(updatedCard: CardapioProduto) {
     if (!id || typeof id !== "string") return;
 
     await updateCardapio(id, updatedCard);

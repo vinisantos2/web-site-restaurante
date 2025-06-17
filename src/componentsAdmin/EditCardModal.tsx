@@ -1,13 +1,13 @@
 // components/EditCardModal.tsx
 import React from "react"
-import { CardViewProps } from "@/src/types/cardapio"
+import { CardapioProduto } from "@/src/types/cardapio"
 import CardapioForm from "./CardapioForm"
 
 type Props = {
   isOpen: boolean
   onClose: () => void
-  card: CardViewProps
-  onChange: (card: CardViewProps) => void
+  card: CardapioProduto
+  onChange: (card: CardapioProduto) => void
   onSave: () => void
 }
 

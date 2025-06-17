@@ -1,77 +1,86 @@
-"use client";
-import Loading from "@/src/componentsAdmin/Loading";
-import { loginWithEmail } from "@/src/firebase/auth";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+"use client"
+
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import toast from "react-hot-toast"
+import { signInWithEmailAndPassword } from "firebase/auth"
+import { auth } from "@/src/firebase/firebaseConfig"
+import Loading from "@/src/componentsAdmin/Loading"
+import { buscarUsuario } from "@/src/services/usuarioService"
 
 export default function AdminLogin() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+  const router = useRouter()
+  const [email, setEmail] = useState("")
+  const [senha, setSenha] = useState("")
   const [loading, setLoading] = useState(true)
 
+  // Verifica se já está logado e se é admin
   useEffect(() => {
-    const auth = getAuth();
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        router.replace("/admin");
-        setLoading(false)
+    const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          const usuario = await buscarUsuario(firebaseUser.uid)
+          if (usuario?.tipo === "admin") {
+            router.replace("/admin")
+          } else {
+            toast.error("Acesso negado. Apenas administradores podem entrar.")
+            auth.signOut()
+          }
+        } catch (error) {
+          console.error("Erro ao buscar usuário:", error)
+          toast.error("Erro ao verificar permissão.")
+        }
       }
       setLoading(false)
-    });
+    })
 
-    return () => unsubscribe();
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!camposValidos()) return;
-    setLoading(true)
-    try {
-      await loginWithEmail(email, senha);
-      router.push("/admin");
-      setLoading(false)
-    } catch (e) {
-      toast.error("Erro ao fazer login. Verifique os dados.");
-      console.log(e);
-      setLoading(false)
-    }
-  };
+    return () => unsubscribe()
+  }, [router])
 
   const camposValidos = () => {
     if (!email.includes("@") || !email.includes(".")) {
-      toast.error("Digite um e-mail válido.");
-      return false;
+      toast.error("Digite um e-mail válido.")
+      return false
     }
-
     if (senha.length < 5) {
-      toast.error("Senha deve ter pelo menos 5 caracteres.");
-      return false;
+      toast.error("Senha deve ter pelo menos 5 caracteres.")
+      return false
     }
+    return true
+  }
 
-    return true;
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!camposValidos()) return
+    setLoading(true)
+
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, senha)
+      const usuario = await buscarUsuario(result.user.uid)
+
+      if (usuario?.tipo === "admin") {
+        router.push("/admin")
+      } else {
+        toast.error("Você não tem permissão para acessar esta área.")
+        auth.signOut()
+      }
+    } catch (e) {
+      console.error(e)
+      toast.error("Erro ao fazer login. Verifique os dados.")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-yellow-100 to-yellow-300 px-4">
       <div className="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md border border-yellow-200">
-        <h1 className="text-3xl font-extrabold text-center text-yellow-600 mb-2">
-          Lanchonete XYZ
-        </h1>
-        <p className="text-center text-gray-600 mb-6 text-sm">
-          Acesso exclusivo para administradores
-        </p>
+        <h1 className="text-3xl font-extrabold text-center text-yellow-600 mb-2">Lanchonete XYZ</h1>
+        <p className="text-center text-gray-600 mb-6 text-sm">Acesso exclusivo para administradores</p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              E-mail
-            </label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">E-mail</label>
             <input
               id="email"
               type="email"
@@ -83,12 +92,7 @@ export default function AdminLogin() {
           </div>
 
           <div>
-            <label
-              htmlFor="senha"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Senha
-            </label>
+            <label htmlFor="senha" className="block text-sm font-medium text-gray-700">Senha</label>
             <input
               id="senha"
               type="password"
@@ -106,8 +110,9 @@ export default function AdminLogin() {
             Entrar
           </button>
         </form>
-        {loading ? <Loading /> : null}
+
+        {loading && <Loading />}
       </div>
     </div>
-  );
+  )
 }

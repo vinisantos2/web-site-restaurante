@@ -1,7 +1,7 @@
-import { CardViewProps } from "../types/cardapio"
+import { CardapioProduto } from "../types/cardapio"
 
 export default function CardViewAdm({ card, edit, deleted }: {
-    card: CardViewProps,
+    card: CardapioProduto,
     edit: () => void,
     deleted: () => void
 }

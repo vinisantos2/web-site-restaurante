@@ -3,6 +3,8 @@
 import { useRouter } from 'next/router'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
+import CarrinhoHeaderButton from './CarrinhoHeaderButton'
+import LoginButtonHeader from './LoginHeaderButton'
 
 type HeaderBackProps = {
   topicos?: string[]
@@ -46,6 +48,9 @@ export default function HeaderBack({ topicos = [] }: HeaderBackProps) {
                 {topico}
               </button>
             ))}
+            <LoginButtonHeader />
+            <CarrinhoHeaderButton />
+
           </nav>
         )}
       </div>

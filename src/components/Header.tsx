@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import CarrinhoHeaderButton from "./CarrinhoHeaderButton";
+import LoginButtonHeader from "./LoginHeaderButton";
 
 const menu = [
   { nome: "Início", url: "/" },
@@ -43,7 +45,11 @@ export default function Header() {
               </span>
             </Link>
           ))}
+          <LoginButtonHeader />
+          <CarrinhoHeaderButton />
+
         </nav>
+
       </div>
     </header>
   );

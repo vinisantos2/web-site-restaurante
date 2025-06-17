@@ -1,12 +1,12 @@
 import React, { useState } from "react"
-import { CardViewProps } from "@/src/types/cardapio"
+import { CardapioProduto } from "@/src/types/cardapio"
 import ImageUploader from "./ImageUploader"
 import { deleteImageFromFirebase, uploadFileToFirebase } from "../firebase/uploadImage"
 
 type Props = {
-  card: CardViewProps
-  onChange: (card: CardViewProps) => void
-  onSubmit: (card: CardViewProps) => void
+  card: CardapioProduto
+  onChange: (card: CardapioProduto) => void
+  onSubmit: (card: CardapioProduto) => void
   buttonLabel: string
 }
 

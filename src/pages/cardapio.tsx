@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { Title } from '../components/Title'
-import { CardView } from '../components/CardView'
+import { CardViewCardapio } from '../components/CardView'
 import HeaderBack from '../components/HeaderBack'
-import { CardViewProps } from '../types/cardapio'
+import { CardapioProduto } from '../types/cardapio'
 import { getCardapioOnce } from '../services/cardapioService'
 
 export default function Cardapio() {
-  const [cardapio, setCardapio] = useState<CardViewProps[]>([])
+  const [cardapio, setCardapio] = useState<CardapioProduto[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function Cardapio() {
     if (!acc[topico]) acc[topico] = []
     acc[topico].push(item)
     return acc
-  }, {} as Record<string, CardViewProps[]>)
+  }, {} as Record<string, CardapioProduto[]>)
 
   const topicosUnicos = Object.keys(cardapioPorTopico)
 
@@ -72,14 +72,9 @@ export default function Cardapio() {
                   </h2>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {cardapioPorTopico[topico].map((item) => (
-                      <CardView
+                      <CardViewCardapio
                         key={item.id}
-                        topico={item.topico}
-                        title={item.title}
-                        description={item.description}
-                        imageUrl={item.imageUrl}
-                        valor={item.valor}
-                        disponivel={item.disponivel}
+                        produto={item}
                       />
                     ))}
                   </div>

@@ -1,5 +1,5 @@
 // src/types/cardapio.ts
-export type CardViewProps = {
+export type CardapioProduto = {
     id?: string
     title: string
     topico: string
