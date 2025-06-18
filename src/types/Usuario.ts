@@ -9,7 +9,7 @@ export type Usuario = {
     nome: string
     email: string
     telefone: string
-    tipo: TipoUsuario
-    criadoEm: Date
+    tipo?: TipoUsuario
+    criadoEm?: Date
     endereco?: Array<Endereco>
 }

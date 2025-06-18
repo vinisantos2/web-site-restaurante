@@ -11,7 +11,7 @@ export async function salvarUsuario(usuario: Usuario) {
   try {
     await setDoc(doc(usuariosCollection, usuario.uid), {
       ...usuario,
-      criadoEm: usuario.criadoEm.toISOString(), // salvar como string
+      criadoEm: usuario.criadoEm, 
     })
   } catch (error) {
     console.error("Erro ao salvar usuário:", error)

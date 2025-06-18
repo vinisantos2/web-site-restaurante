@@ -1,6 +1,6 @@
 import { CardapioProduto } from "@/src/types/cardapio";
 import { useEffect, useState } from "react";
-import CardViewAdm from "../CardViewAdm";
+import CardViewCardapioAdm from "../CardViewCardapioAdm";
 import { useRouter } from "next/navigation";
 import { deleteCardapio, getCardapioOnce } from "@/src/services/cardapioService";
 import Loading from "../Loading";
@@ -80,7 +80,7 @@ export default function CardapioAdmin() {
                     <p className="text-center text-gray-500">Nenhum cardápio encontrado.</p>
                 ) : (
                     filteredCards.map((card) => (
-                        <CardViewAdm
+                        <CardViewCardapioAdm
                             key={card.id}
                             card={card}
                             edit={() => edit(card.id!)}

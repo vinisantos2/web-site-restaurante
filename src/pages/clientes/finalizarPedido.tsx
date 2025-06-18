@@ -5,10 +5,10 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import HeaderBack from '../../components/HeaderBack'
 import { criarPedido } from '../../services/pedidosService'
-import { Pedido } from '../../types/Pedido'
 import { useAuthRedirectCliente } from '@/src/hooksCliente/useAuthRedirectCliente'
 import { getEnderecosByCliente } from '@/src/services/enderecosService'
 import { Endereco } from '@/src/types/Endereco'
+import { Pedido, ItemPedido } from '@/src/types/Pedido'
 
 export default function FinalizarPedidoPedidoPage() {
   const { itens, limparCarrinho } = useCart()
@@ -33,14 +33,31 @@ export default function FinalizarPedidoPedidoPage() {
       return
     }
 
+    const enderecoObj = enderecos.find(e =>
+      `${e.rua}, ${e.numero} - ${e.bairro}, ${e.cidade}` === enderecoSelecionado
+    )
+
+    if (!enderecoObj) {
+      alert('Endereço inválido.')
+      return
+    }
+
     setEnviando(true)
 
     try {
+
       const pedido: Omit<Pedido, 'id'> = {
         clienteId: usuario!.uid,
-        itens,
+        cliente: {
+          nome: usuario?.nome || 'Cliente',
+          email: usuario?.email || '',
+          uid: usuario?.uid || "",
+          telefone: usuario?.telefone || '',
+        },
+        endereco: enderecoObj,
+        itens: itens as ItemPedido[],
         status: 'pendente',
-        criadoEm: new Date().toISOString(),
+        criadoEm: new Date(),
       }
 
       await criarPedido(pedido)
@@ -97,14 +114,14 @@ export default function FinalizarPedidoPedidoPage() {
             disabled={enviando}
           >
             <option value="">Selecione um endereço de entrega *</option>
-            {enderecos.map((endereco) => (
-              <option
-                key={endereco.id}
-                value={`${endereco.rua}, ${endereco.numero} - ${endereco.bairro}, ${endereco.cidade}`}
-              >
-                {endereco.rua}, {endereco.numero} - {endereco.bairro}, {endereco.cidade}
-              </option>
-            ))}
+            {enderecos.map((endereco) => {
+              const valor = `${endereco.rua}, ${endereco.numero} - ${endereco.bairro}, ${endereco.cidade}`
+              return (
+                <option key={endereco.id} value={valor}>
+                  {valor}
+                </option>
+              )
+            })}
           </select>
 
           <button
