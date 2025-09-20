@@ -73,18 +73,22 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-yellow-100 to-yellow-300 px-4">
-      <div className="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-md border border-yellow-200">
-        <h1 className="text-3xl font-extrabold text-center text-yellow-600 mb-2">Lanchonete XYZ</h1>
-        <p className="text-center text-gray-600 mb-6 text-sm">Acesso exclusivo para administradores</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-yellow-100 to-yellow-300 dark:from-gray-900 dark:to-gray-800 px-4">
+      <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 w-full max-w-md border border-yellow-200 dark:border-gray-700">
+        <h1 className="text-3xl font-extrabold text-center text-yellow-600 dark:text-yellow-400 mb-2">Lanchonete XYZ</h1>
+        <p className="text-center text-gray-600 dark:text-gray-300 mb-6 text-sm">
+          Acesso exclusivo para administradores
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">E-mail</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              E-mail
+            </label>
             <input
               id="email"
               type="email"
-              className="mt-1 block w-full rounded-lg border border-gray-300 shadow-sm px-4 py-2 focus:ring-yellow-500 focus:border-yellow-500 transition"
+              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 focus:ring-yellow-500 focus:border-yellow-500 transition bg-white dark:bg-gray-800 dark:text-gray-100"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -92,11 +96,13 @@ export default function AdminLogin() {
           </div>
 
           <div>
-            <label htmlFor="senha" className="block text-sm font-medium text-gray-700">Senha</label>
+            <label htmlFor="senha" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Senha
+            </label>
             <input
               id="senha"
               type="password"
-              className="mt-1 block w-full rounded-lg border border-gray-300 shadow-sm px-4 py-2 focus:ring-yellow-500 focus:border-yellow-500 transition"
+              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm px-4 py-2 focus:ring-yellow-500 focus:border-yellow-500 transition bg-white dark:bg-gray-800 dark:text-gray-100"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
               required
@@ -105,7 +111,7 @@ export default function AdminLogin() {
 
           <button
             type="submit"
-            className="w-full bg-yellow-600 text-white font-semibold py-2 rounded-lg hover:bg-yellow-700 transition shadow-sm"
+            className="w-full bg-yellow-600 text-white font-semibold py-2 rounded-lg hover:bg-yellow-700 transition shadow-sm dark:bg-yellow-500 dark:hover:bg-yellow-600"
           >
             Entrar
           </button>
