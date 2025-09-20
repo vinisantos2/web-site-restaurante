@@ -16,27 +16,27 @@ export default function LoginClientePage() {
   const [loading, setLoading] = useState(true)
 
   // Verifica se já está logado e se é cliente
-   useEffect(() => {
-     const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
-       if (firebaseUser) {
-         try {
-           const usuario = await buscarUsuario(firebaseUser.uid)
-           if (usuario?.tipo === "cliente") {
-             router.replace("/clientes")
-           } else {
-             toast.error("Acesso negado. Logue como cliente.")
-             auth.signOut()
-           }
-         } catch (error) {
-           console.error("Erro ao buscar usuário:", error)
-           toast.error("Erro ao verificar permissão.")
-         }
-       }
-       setLoading(false)
-     })
- 
-     return () => unsubscribe()
-   }, [router])
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
+      if (firebaseUser) {
+        try {
+          const usuario = await buscarUsuario(firebaseUser.uid)
+          if (usuario?.tipo === "cliente") {
+            router.replace("/clientes")
+          } else {
+            toast.error("Acesso negado. Logue como cliente.")
+            auth.signOut()
+          }
+        } catch (error) {
+          console.error("Erro ao buscar usuário:", error)
+          toast.error("Erro ao verificar permissão.")
+        }
+      }
+      setLoading(false)
+    })
+
+    return () => unsubscribe()
+  }, [router])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -55,45 +55,52 @@ export default function LoginClientePage() {
   if (loading) return <Loading />
 
   return (
-    <form
-      onSubmit={handleLogin}
-      className="max-w-md mx-auto mt-10 p-6 bg-white shadow rounded space-y-4"
-    >
-      <h2 className="text-2xl font-bold mb-4">Login do Cliente</h2>
-      {erro && <p className="text-red-600">{erro}</p>}
-
-      <input
-        type="email"
-        placeholder="E-mail"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full border p-2 rounded"
-        required
-      />
-
-      <input
-        type="password"
-        placeholder="Senha"
-        value={senha}
-        onChange={(e) => setSenha(e.target.value)}
-        className="w-full border p-2 rounded"
-        required
-      />
-
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 cursor-pointer"
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+      <form
+        onSubmit={handleLogin}
+        className="max-w-md w-full p-8 bg-white dark:bg-gray-800 shadow-xl rounded-2xl space-y-5 border border-gray-200 dark:border-gray-700"
       >
-        Entrar
-      </button>
+        <h2 className="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-100 text-center">
+          Login do Cliente
+        </h2>
 
-      <button
-        onClick={() => router.push("/clientes/cadastro")}
-        type="button"
-        className="w-full bg-black text-white font-semibold py-2 rounded-lg hover:bg-blue-950 transition shadow-sm cursor-pointer"
-      >
-        Cadastre-se
-      </button>
-    </form>
+        {erro && (
+          <p className="text-red-600 dark:text-red-400 text-center">{erro}</p>
+        )}
+
+        <input
+          type="email"
+          placeholder="E-mail"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full border border-gray-300 dark:border-gray-600 p-3 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          required
+        />
+
+        <input
+          type="password"
+          placeholder="Senha"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
+          className="w-full border border-gray-300 dark:border-gray-600 p-3 rounded-lg bg-white dark:bg-gray-700 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          required
+        />
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition font-semibold"
+        >
+          Entrar
+        </button>
+
+        <button
+          onClick={() => router.push("/clientes/cadastro")}
+          type="button"
+          className="w-full bg-gray-900 dark:bg-gray-600 text-white font-semibold py-2 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-700 transition"
+        >
+          Cadastre-se
+        </button>
+      </form>
+    </div>
   )
 }
